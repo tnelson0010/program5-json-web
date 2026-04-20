@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Majors</title>
+
+    <!-- Handlebars -->
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+        }
+
+        table {
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid black;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Student Majors</h2>
+
+    <button onclick="loadData('CIT')">CIT Majors</button>
+    <button onclick="loadData('BUS')">Business Majors</button>
+
+    <div id="output"></div>
+
+    <!-- Handlebars Template -->
+    <script id="studentTemplate" type="text/x-handlebars-template">
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Major</th>
+                <th>Midterm</th>
+                <th>Final</th>
+            </tr>
+
+            {{#each students}}
+            <tr>
+                <td>{{name}}</td>
+                <td>{{major}}</td>
+                <td>{{midterm}}</td>
+                <td>{{final}}</td>
+            </tr>
+            {{/each}}
+
+        </table>
+    </script>
+
+    <script>
+        function loadData(majorType) {
+
+            fetch('cit5students.json')
+                .then(response => response.json())
+                .then(data => {
+
+                    // Filter students
+                    let filtered = data.filter(student => student.major === majorType);
+
+                    // Handlebars
+                    let source = document.getElementById("studentTemplate").innerHTML;
+                    let template = Handlebars.compile(source);
+
+                    let html = template({ students: filtered });
+
+                    document.getElementById("output").innerHTML = html;
+                })
+                .catch(error => {
+                    document.getElementById("output").innerHTML = "Error loading data.";
+                    console.error(error);
+                });
+        }
+    </script>
+
+</body>
+</html>
